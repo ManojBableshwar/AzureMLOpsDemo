@@ -1,5 +1,14 @@
 name: hello-azureml
-on: push
+on:
+  workflow_dispatch:
+    inputs:
+      GROUP:
+        default: "rg-contoso-819prod"
+      LOCATION:
+        default: "eastus"
+      WORKSPACE:
+        default: "mlw-contoso-819prod"
+
 jobs:
   build:
     runs-on: ubuntu-latest

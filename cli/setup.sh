@@ -1,10 +1,10 @@
 az extension add -n ml -y
 
-GROUP="rg-contoso-819prod"
+GROUP=${{ github.event.inputs.name.GROUP }}
 
-LOCATION="eastus"
+LOCATION=${{ github.event.inputs.name.LOCATION }}
 
-WORKSPACE="mlw-contoso-819prod"
+WORKSPACE=${{ github.event.inputs.name.WORKSPACE }}
 
 az configure --defaults group=$GROUP workspace=$WORKSPACE location=$LOCATION
 
