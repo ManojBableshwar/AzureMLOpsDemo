@@ -23,5 +23,9 @@ jobs:
       run: bash setup.sh
       working-directory: cli
       continue-on-error: true
+      with: 
+        GROUP: ${{ github.event.inputs.name.GROUP }}
+        LOCATION: ${{ github.event.inputs.name.LOCATION }}
+        WORKSPACE: ${{ github.event.inputs.name.WORKSPACE }}   
     - name: check cli
       run: az ml compute list
