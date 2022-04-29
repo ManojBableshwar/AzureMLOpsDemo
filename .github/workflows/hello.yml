@@ -39,6 +39,5 @@ jobs:
     - name: setup
       run: bash setup.sh 
       working-directory: cli
-      continue-on-error: tru
     - name: check cli
       run: az ml compute list
