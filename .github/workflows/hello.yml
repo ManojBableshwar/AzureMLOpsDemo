@@ -13,10 +13,13 @@ on:
     inputs:
       GROUP:
         default: "rg-contoso-819prod"
+        type: string
       LOCATION:
         default: "eastus"
+        type: string
       WORKSPACE:
         default: "mlw-contoso-819prod"
+        type: string
 
 jobs:
   build:
