@@ -1,5 +1,5 @@
 name: hello-azureml
-on:
+on: push
   workflow_dispatch:
     inputs:
       GROUP:
