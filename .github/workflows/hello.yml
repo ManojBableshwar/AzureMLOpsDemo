@@ -1,4 +1,4 @@
-name: hello-azureml
+name: list-compute
 on: 
   push:
   workflow_dispatch:
@@ -27,7 +27,7 @@ env:
   WORKSPACE: ${{ github.event.inputs.name.WORKSPACE }}  
 
 jobs:
-  build:
+  list-compute:
     runs-on: ubuntu-latest
     steps:
     - name: check out repo
