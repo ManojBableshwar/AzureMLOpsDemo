@@ -33,11 +33,11 @@ jobs:
         creds: ${{secrets.AZ_CREDS}}
     - name: setup
       run: bash setup.sh
-      working-directory: cli
-      continue-on-error: true
       with: 
         GROUP: ${{ github.event.inputs.name.GROUP }}
         LOCATION: ${{ github.event.inputs.name.LOCATION }}
         WORKSPACE: ${{ github.event.inputs.name.WORKSPACE }}   
+      working-directory: cli
+      continue-on-error: tru
     - name: check cli
       run: az ml compute list
