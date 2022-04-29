@@ -1,5 +1,7 @@
 # AzureMLOpsDemo
 
+Make your you have `az login` and `az account set`
+
 ```
 GROUP="rg-contoso-819prod"
 
