@@ -40,4 +40,4 @@ jobs:
       run: bash setup.sh 
       working-directory: cli
     - name: create-job
-      run: bash -x run-job.sh src/pipeline/pipeline.yml
+      run: bash -x cli/create-job.sh src/pipeline/pipeline.yml
