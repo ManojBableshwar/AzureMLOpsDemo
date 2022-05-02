@@ -1,0 +1,43 @@
+name: create-job
+on: 
+  push:
+  workflow_dispatch:
+    inputs:
+      GROUP:
+        default: "rg-contoso-819prod"
+      LOCATION:
+        default: "eastus"
+      WORKSPACE:
+        default: "mlw-contoso-819prod"
+  workflow_call:
+    inputs:
+      GROUP:
+        default: "rg-contoso-819prod"
+        type: string
+      LOCATION:
+        default: "eastus"
+        type: string
+      WORKSPACE:
+        default: "mlw-contoso-819prod"
+        type: string
+
+env:
+  GROUP: ${{ github.event.inputs.name.GROUP }}
+  LOCATION: ${{ github.event.inputs.name.LOCATION }}
+  WORKSPACE: ${{ github.event.inputs.name.WORKSPACE }}  
+
+jobs:
+  list-compute:
+    runs-on: ubuntu-latest
+    steps:
+    - name: check out repo
+      uses: actions/checkout@v2
+    - name: azure login
+      uses: azure/login@v1
+      with:
+        creds: ${{secrets.AZ_CREDS}}
+    - name: setup
+      run: bash setup.sh 
+      working-directory: cli
+    - name: create-job
+      run: bash -x run-job.sh src/pipeline/pipeline.yml
