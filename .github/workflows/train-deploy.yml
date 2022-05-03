@@ -14,7 +14,6 @@ on:
 
 jobs:
   train-job:
-    id: train-job
 #    environment: 
 #      name: dev
 #      url: ${{ steps.create-job-step.outputs.RUNURI }}
