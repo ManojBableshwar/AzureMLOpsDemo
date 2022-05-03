@@ -14,6 +14,9 @@ on:
 
 jobs:
   train-job:
+    environment: 
+      name: dev
+      url: ${{ steps.create-job-step.outputs.RUNURI }}
     uses: ./.github/workflows/create-job.yml
     with: 
       GROUP: "rg-contoso-819prod"
@@ -21,3 +24,4 @@ jobs:
       WORKSPACE: "mlw-contoso-819prod"
     secrets:
       AZ_CREDS: ${{ secrets.AZ_CREDS }}
+

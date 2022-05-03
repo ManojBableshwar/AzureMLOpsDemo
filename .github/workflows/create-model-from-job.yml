@@ -1,4 +1,4 @@
-name: create-model-from-job-workflow
+name: create-job-workflow
 on: 
   workflow_dispatch:
     inputs:
@@ -19,6 +19,9 @@ on:
       WORKSPACE:
         default: "mlw-contoso-819prod"
         type: string
+      RUNID:
+        type: string
+        required: true
     secrets:
       AZ_CREDS:
         required: true
@@ -30,9 +33,9 @@ env:
 
 jobs:
   create-mljob-job:
-#    environment: 
-#      name: dev
-#      url: ${{ steps.create-job-step.outputs.RUNURI }}
+    environment: 
+      name: dev
+      url: ${{ steps.create-job-step.outputs.RUNURI }}
     runs-on: ubuntu-latest
     steps:
     - name: check out repo
@@ -47,5 +50,3 @@ jobs:
     - name: create-job-step
       id: create-job-step 
       run: bash -x cli/create-job.sh src/pipeline/pipeline.yml
-    outputs:
-      MLJOB_RUNURI: ${{ steps.create-job-step.outputs.RUNURI }}

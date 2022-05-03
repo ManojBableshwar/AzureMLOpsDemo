@@ -1,9 +1,9 @@
 job=$1
 
-export run_id=$(az ml job create -f $job --query name -o tsv)
-#export run_uri=$(az ml job show -n $run_id --query services.Studio.endpoint)
+export run_id=$(az ml job create --file $job --query name -o tsv)
+#export run_uri=$(az ml job show --name $run_id --query services.Studio.endpoint)
 export run_uri="https://ml.azure.com/runs/$run_id"
-az ml job show -n $run_id
+az ml job show --name $run_id
 
 if [[ -z "$run_id" ]]
 then
@@ -11,7 +11,7 @@ then
     exit 3
 fi
 
-status=$(az ml job show -n $run_id --query status -o tsv)
+status=$(az ml job show --name $run_id --query status -o tsv)
 
 if [[ -z "$status" ]]
 then
@@ -19,7 +19,7 @@ then
     exit 4
 fi
 
-job_uri=$(az ml job show -n $run_id --query services.Studio.endpoint)
+job_uri=$(az ml job show --name $run_id --query services.Studio.endpoint)
 
 echo $job_uri
 
@@ -28,7 +28,7 @@ while [[ ${running[*]} =~ $status ]]
 do
     echo $job_uri
     sleep 8 
-    status=$(az ml job show -n $run_id --query status -o tsv)
+    status=$(az ml job show --name $run_id --query status -o tsv)
     echo $status
 done
 
