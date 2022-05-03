@@ -7,7 +7,7 @@ on:
 
 jobs:
   train-job:
-    uses: ./.github/workflows/create-job.yml@v1
+    uses: ManojBableshwar/AzureMLOpsDemo/.github/workflows/create-job.yml@v1
     with: 
       GROUP: "rg-contoso-819prod"
       LOCATION: "eastus"
