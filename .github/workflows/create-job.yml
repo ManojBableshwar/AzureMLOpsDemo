@@ -19,6 +19,9 @@ on:
       WORKSPACE:
         default: "mlw-contoso-819prod"
         type: string
+    secrets:
+      AZ_CREDS:
+        required: true
 
 env:
   GROUP: ${{ github.event.inputs.name.GROUP }}
