@@ -1,7 +1,10 @@
 $schema: https://azuremlschemas.azureedge.net/latest/managedOnlineDeployment.schema.json
-name: nyctaxi-deployment
-endpoint_name: nyctaxi-ep
-model: azureml:nyctaxi-model:1
+# this this a placeholder deployment name that the CLI will override...
+name: placeholder-deployment
+# this this a placeholder endpoint name that the CLI will override...
+endpoint_name: placeholder-ep
+# this this a placeholder model name that the CLI will override...
+model: azureml:placeholder-model:1
 environment: azureml:AzureML-sklearn-0.24.1-ubuntu18.04-py37-cpu-inference:36
 code_configuration:
   code: ./

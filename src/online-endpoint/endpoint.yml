@@ -1,3 +1,4 @@
 $schema: https://azuremlschemas.azureedge.net/latest/managedOnlineEndpoint.schema.json
-name: nyctaxi-ep
+# this this a placeholder endpoint name that the CLI will override...
+name: placeholder-ep
 auth_mode: key
