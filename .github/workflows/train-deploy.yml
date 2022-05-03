@@ -1,9 +1,15 @@
 name: train-deploy
 
-on:
-  pull_request:
-    branches:
-      - main
+on: 
+  push:
+  workflow_dispatch:
+    inputs:
+      GROUP:
+        default: "rg-contoso-819prod"
+      LOCATION:
+        default: "eastus"
+      WORKSPACE:
+        default: "mlw-contoso-819prod"
 
 jobs:
   train-job:
