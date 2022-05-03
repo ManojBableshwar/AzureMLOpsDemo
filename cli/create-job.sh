@@ -36,7 +36,7 @@ if [[ $status == "Completed" ]]
 then
     echo "Job completed"
     echo "::set-output name=RUNID::$run_id"
-    echo "::set-output name=RUNURI::$run_uri"
+    echo "::set-output name=RUNURI::https://ml.azure.com/runs/$run_id"
     exit 0
 elif [[ $status == "Failed" ]]
 then

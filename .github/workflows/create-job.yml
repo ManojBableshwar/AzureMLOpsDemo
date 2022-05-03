@@ -43,4 +43,5 @@ jobs:
       run: bash setup.sh 
       working-directory: cli
     - name: create-job-step
+      id: create-job-step 
       run: bash -x cli/create-job.sh src/pipeline/pipeline.yml
