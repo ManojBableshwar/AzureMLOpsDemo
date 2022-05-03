@@ -1,7 +1,7 @@
 run_id=$1
 
-model_id="nyctaxi-model"
-model_version=$run_id
+model_id="nyctaxi-$run_id"
+model_version=1
 
 [[ -z "$run_id" ]] && { echo "run_id is empty" ; exit 1; }
 
