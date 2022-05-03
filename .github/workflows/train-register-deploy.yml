@@ -79,7 +79,7 @@ jobs:
   deploy-model-job:
     needs: register-model-job
     environment: 
-      name: prod
+      name: pre-prod
       url: ${{ steps.deploy-model-step.outputs.EPURI }}
     runs-on: ubuntu-latest
     steps:
@@ -95,4 +95,28 @@ jobs:
     - name: deploy-model-step
       id: deploy-model-step
       run: bash -x cli/deploy-model.sh ${{ needs.register-model-job.outputs.CREATEMODELJOB_MODELID }} 1
+    outputs:
+      DEPLOYJOB_ENDPOINTID: ${{ steps.deploy-model-step.outputs.ENDPOINTID }}
+      DEPLOYJOB_DEPLOYMENTID: ${{ steps.deploy-model-step.outputs.DEPLOYMENTIDID }}
+      DEPLOYJOB_EPURI: ${{ steps.deploy-model-step.outputs.EPURI }}
+
+  release-model-job:
+    needs: deploy-model-job
+    environment: 
+      name: prod
+      url: ${{ needs.register-model-job.outputs.DEPLOYJOB_EPURI }}
+    runs-on: ubuntu-latest
+    steps:
+    - name: check-out-repo-step
+      uses: actions/checkout@v2
+    - name: azure-login-step
+      uses: azure/login@v1
+      with:
+        creds: ${{secrets.AZ_CREDS}}
+    - name: set-azureml-ws-context-step
+      run: bash setup.sh 
+      working-directory: cli
+    - name: release-model-step
+      id: release-model-step
+      run: bash -x cli/release-model.sh ${{ needs.deploy-model-job.outputs.DEPLOYJOB_ENDPOINTID }} ${{ needs.deploy-model-job.outputs.DEPLOYJOB_DEPLOYMENTID }} 
 

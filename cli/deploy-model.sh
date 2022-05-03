@@ -18,16 +18,27 @@ deployment_name=$(echo $model_id | sed 's/nyctaxi-model/dply/')
 deployment_name=$(echo $deployment_name | sed 's/_/-/g')
 
 
-az ml online-endpoint create --name $endpoint_name --file src/online-endpoint/endpoint.yml || {
+az ml online-endpoint show --name $endpoint_name 
+
+
+az ml online-endpoint show --name $endpoint_name 
+
+if [[ $? != 0 ]]
+then
+  echo "Endpoint $endpoint_name does not exist. Creating..."
+  az ml online-endpoint create --name $endpoint_name --file src/online-endpoint/endpoint.yml || {
     echo "endpoint create failed..."; exit 1; 
-}
+  }
+fi
+
+
 
 az ml online-deployment create --name $deployment_name --endpoint-name $endpoint_name \
 --set model=azureml:$model_id:$model_version --file src/online-endpoint/deploy.yml  || {
     echo "deployment create failed..."; exit 1; 
 }
 
-az ml online-endpoint show --name $endpoint_name 
+
 
 az ml online-deployment show --name $deployment_name --endpoint-name $endpoint_name 
 
@@ -40,5 +51,9 @@ echo "\n\n\n\nSample scoring response:\n\n\n"
 az ml online-endpoint invoke --name $deployment_name --request-file src/online-endpoint/sample.json
 
 echo "\n\n\n\n"
+
+echo "::set-output name=ENDPOINTID::$endpoint_name"
+
+echo "::set-output name=DEPLOYMENTID::$deployment_name"
 
 echo "::set-output name=EPURI::https://ml.azure.com/endpoints/realtime/$endpoint_name?flight=ModelRegisterV2,ModelRegisterExistingEnvironment,dpv2data"
