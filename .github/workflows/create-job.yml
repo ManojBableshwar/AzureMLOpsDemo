@@ -1,6 +1,5 @@
 name: create-job-workflow
 on: 
-  push:
   workflow_dispatch:
     inputs:
       GROUP:

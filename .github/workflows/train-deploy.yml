@@ -1,0 +1,14 @@
+name: train-deploy
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  train-job:
+    uses: .github/workflows/create-job.yml@v1
+    with: 
+      GROUP: "rg-contoso-819prod"
+      LOCATION: "eastus"
+      WORKSPACE: "mlw-contoso-819prod"
