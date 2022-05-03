@@ -1,17 +1,20 @@
 
-model_id=$1
-model_version=$2
+model_id="nyctaxi-model"
+model_version=$1
 
-[[ -z "$model_id" ]] && { echo "model_id is empty" ; exit 1; }
+[[ -z "$model_version" ]] && { echo "model_version is empty" ; exit 1; }
 
 echo "Model id: $model_id and model version: $model_version"
 
+
+endpoint_name='nyc-taxi-ep'
+
 # endpoint and deployment name can be max 32 char long...
-endpoint_name=$(echo $model_id | sed 's/nyctaxi-model/ep/')
+# endpoint_name=$(echo $model_id | sed 's/nyctaxi-model/ep/')
 deployment_name=$(echo $model_id | sed 's/nyctaxi-model/dply/')
 
 # endpoint and deployment name cannot contain '_'; one alpha numeric and '-'
-endpoint_name=$(echo $endpoint_name | sed 's/_/-/g')
+# endpoint_name=$(echo $endpoint_name | sed 's/_/-/g')
 deployment_name=$(echo $deployment_name | sed 's/_/-/g')
 
 
