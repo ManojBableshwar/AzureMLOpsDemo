@@ -1,7 +1,8 @@
 job=$1
 
 export run_id=$(az ml job create -f $job --query name -o tsv)
-export run_uri=$(az ml job show -n $run_id --query services.Studio.endpoint)
+#export run_uri=$(az ml job show -n $run_id --query services.Studio.endpoint)
+export run_uri="https://ml.azure.com/runs/$run_id"
 az ml job show -n $run_id
 
 if [[ -z "$run_id" ]]
