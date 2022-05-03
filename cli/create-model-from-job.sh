@@ -11,4 +11,4 @@ export model_id=$(az ml model create --name nyctaxi-model-$child_run_id --path a
 az ml model show --name $model_id
 
 echo "::set-output name=MODELID::$model_id"
-echo "::set-output name=MODELURL::https://ml.azure.com/model/$model_id:1"
+echo "::set-output name=MODELURI::https://ml.azure.com/model/$model_id:1"

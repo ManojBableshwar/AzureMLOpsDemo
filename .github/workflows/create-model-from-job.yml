@@ -8,6 +8,9 @@ on:
         default: "eastus"
       WORKSPACE:
         default: "mlw-contoso-819prod"
+      TRAININGJOB_RUNID:
+        type: string
+        required: true
   workflow_call:
     inputs:
       GROUP:
@@ -19,7 +22,7 @@ on:
       WORKSPACE:
         default: "mlw-contoso-819prod"
         type: string
-      RUNID:
+      TRAININGJOB_RUNID:
         type: string
         required: true
     secrets:
@@ -34,8 +37,8 @@ env:
 jobs:
   create-mljob-job:
     environment: 
-      name: dev
-      url: ${{ steps.create-job-step.outputs.RUNURI }}
+      name: test
+      url: ${{ steps.create-job-step.outputs.MODELURI }}
     runs-on: ubuntu-latest
     steps:
     - name: check out repo
@@ -47,6 +50,6 @@ jobs:
     - name: setup
       run: bash setup.sh 
       working-directory: cli
-    - name: create-job-step
-      id: create-job-step 
-      run: bash -x cli/create-job.sh src/pipeline/pipeline.yml
+    - name: create-model-from-job-step
+      id: create-model-from-job-step
+      run: bash -x cli/create-model-from-job.sh ${{ github.event.inputs.name.TRAININGJOB_RUNID }}  

@@ -30,9 +30,9 @@ env:
 
 jobs:
   create-mljob-job:
-#    environment: 
-#      name: dev
-#      url: ${{ steps.create-job-step.outputs.RUNURI }}
+    environment: 
+      name: dev
+      url: ${{ steps.create-job-step.outputs.RUNURI }}
     runs-on: ubuntu-latest
     steps:
     - name: check out repo
@@ -48,4 +48,5 @@ jobs:
       id: create-job-step 
       run: bash -x cli/create-job.sh src/pipeline/pipeline.yml
     outputs:
+      MLJOB_RUNID: ${{ steps.create-job-step.outputs.RUNID }}
       MLJOB_RUNURI: ${{ steps.create-job-step.outputs.RUNURI }}
