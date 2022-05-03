@@ -51,6 +51,7 @@ jobs:
     outputs:
       TRAININGJOB_RUNID: ${{ steps.create-job-step.outputs.RUNID }}
   register-model-job:
+    needs: train-job
     environment: 
       name: test
       url: ${{ steps.create-model-step.outputs.MODELURI }}
