@@ -1,7 +1,8 @@
 
-model_id="nyctaxi-model"
-model_version=$1
+model_id=$1
+model_version=$2
 
+[[ -z "$model_id" ]] && { echo "model_version is empty" ; exit 1; }
 [[ -z "$model_version" ]] && { echo "model_version is empty" ; exit 1; }
 
 echo "Model id: $model_id and model version: $model_version"
@@ -21,8 +22,6 @@ deployment_name=$(echo $deployment_name | sed 's/_/-/g')
 az ml online-endpoint show --name $endpoint_name 
 
 
-az ml online-endpoint show --name $endpoint_name 
-
 if [[ $? != 0 ]]
 then
   echo "Endpoint $endpoint_name does not exist. Creating..."
@@ -32,13 +31,10 @@ then
 fi
 
 
-
 az ml online-deployment create --name $deployment_name --endpoint-name $endpoint_name \
 --set model=azureml:$model_id:$model_version --file src/online-endpoint/deploy.yml  || {
     echo "deployment create failed..."; exit 1; 
 }
-
-
 
 az ml online-deployment show --name $deployment_name --endpoint-name $endpoint_name 
 
