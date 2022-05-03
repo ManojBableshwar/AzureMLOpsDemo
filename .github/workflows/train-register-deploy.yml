@@ -97,7 +97,7 @@ jobs:
       run: bash -x cli/deploy-model.sh ${{ needs.register-model-job.outputs.CREATEMODELJOB_MODELID }} 1
     outputs:
       DEPLOYJOB_ENDPOINTID: ${{ steps.deploy-model-step.outputs.ENDPOINTID }}
-      DEPLOYJOB_DEPLOYMENTID: ${{ steps.deploy-model-step.outputs.DEPLOYMENTIDID }}
+      DEPLOYJOB_DEPLOYMENTID: ${{ steps.deploy-model-step.outputs.DEPLOYMENTID }}
       DEPLOYJOB_EPURI: ${{ steps.deploy-model-step.outputs.EPURI }}
 
   release-model-job:
