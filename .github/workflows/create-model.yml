@@ -1,5 +1,6 @@
-name: create-job-workflow
+name: create-model-workflow
 on: 
+#  push:
   workflow_dispatch:
     inputs:
       GROUP:
@@ -35,10 +36,10 @@ env:
   WORKSPACE: ${{ github.event.inputs.name.WORKSPACE }}  
 
 jobs:
-  create-mljob-job:
+  create-model-job:
     environment: 
       name: test
-      url: ${{ steps.create-job-step.outputs.MODELURI }}
+      url: ${{ steps.create-model-step.outputs.MODELURI }}
     runs-on: ubuntu-latest
     steps:
     - name: check out repo
@@ -50,6 +51,6 @@ jobs:
     - name: setup
       run: bash setup.sh 
       working-directory: cli
-    - name: create-model-from-job-step
-      id: create-model-from-job-step
-      run: bash -x cli/create-model-from-job.sh ${{ github.event.inputs.name.TRAININGJOB_RUNID }}  
+    - name: create-model-step
+      id: create-model-step
+      run: bash -x cli/create-model.sh ${{ github.event.inputs.name.TRAININGJOB_RUNID }}  

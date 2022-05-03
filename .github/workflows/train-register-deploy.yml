@@ -1,4 +1,4 @@
-name: list-compute
+name: work-in-progress-workflow
 on: 
 #  push:
   workflow_dispatch:
@@ -20,6 +20,9 @@ on:
       WORKSPACE:
         default: "mlw-contoso-819prod"
         type: string
+    secrets:
+      AZ_CREDS:
+        required: true
 
 env:
   GROUP: ${{ github.event.inputs.name.GROUP }}
@@ -27,7 +30,10 @@ env:
   WORKSPACE: ${{ github.event.inputs.name.WORKSPACE }}  
 
 jobs:
-  list-compute:
+  create-mljob-job:
+    environment: 
+      name: dev
+      url: ${{ steps.create-job-step.outputs.RUNURI }}
     runs-on: ubuntu-latest
     steps:
     - name: check out repo
@@ -39,5 +45,10 @@ jobs:
     - name: setup
       run: bash setup.sh 
       working-directory: cli
-    - name: check cli
-      run: az ml compute list
+    - name: create-job-step
+      id: create-job-step 
+      run: bash -x cli/create-job.sh src/pipeline/pipeline.yml
+    outputs:
+      MLJOB_RUNID: ${{ steps.create-job-step.outputs.RUNID }}
+      MLJOB_RUNURI: ${{ steps.create-job-step.outputs.RUNURI }}
+

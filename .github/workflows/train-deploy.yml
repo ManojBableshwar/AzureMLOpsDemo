@@ -21,12 +21,9 @@ jobs:
       WORKSPACE: "mlw-contoso-819prod"
     secrets:
       AZ_CREDS: ${{ secrets.AZ_CREDS }}
-    outputs:
-      MLJOB_RUNID: ${{ steps.create-job-step.outputs.RUNID }}
-      MLJOB_RUNURI: ${{ steps.create-job-step.outputs.RUNURI }}
   register-model-job:
     needs: train-job
-    uses: ./.github/workflows/create-model-from-job.yml
+    uses: ./.github/workflows/create-model.yml
     with: 
       GROUP: "rg-contoso-819prod"
       LOCATION: "eastus"

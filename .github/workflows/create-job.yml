@@ -1,5 +1,6 @@
-name: create-model-from-job-workflow
+name: create-job-workflow
 on: 
+#  push:
   workflow_dispatch:
     inputs:
       GROUP:
@@ -47,6 +48,6 @@ jobs:
     - name: create-job-step
       id: create-job-step 
       run: bash -x cli/create-job.sh src/pipeline/pipeline.yml
-#    outputs:
-#      MLJOB_RUNID: ${{ steps.create-job-step.outputs.RUNID }}
-#      MLJOB_RUNURI: ${{ steps.create-job-step.outputs.RUNURI }}
+    outputs:
+      MLJOB_RUNID: ${{ steps.create-job-step.outputs.RUNID }}
+      MLJOB_RUNURI: ${{ steps.create-job-step.outputs.RUNURI }}
