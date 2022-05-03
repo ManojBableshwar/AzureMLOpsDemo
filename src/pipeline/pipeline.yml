@@ -24,7 +24,7 @@ jobs:
   transform_job:
     type: command
     inputs: 
-      clean_data: ${{parent.jobs.prep-job.outputs.prep_data}}
+      clean_data: ${{parent.jobs.prep_job.outputs.prep_data}}
     outputs:
       transformed_data:
         mode: rw_mount
@@ -39,7 +39,7 @@ jobs:
   train_job:
     type: command
     inputs:
-      training_data: ${{parent.jobs.transform-job.outputs.transformed_data}}
+      training_data: ${{parent.jobs.transform_job.outputs.transformed_data}}
     outputs:
       model_output: 
         mode: rw_mount
@@ -57,8 +57,8 @@ jobs:
   predict_job:
     type: command
     inputs:
-      model_input: ${{parent.jobs.train-job.outputs.model_output}}
-      test_data: ${{parent.jobs.train-job.outputs.test_data}}
+      model_input: ${{parent.jobs.train_job.outputs.model_output}}
+      test_data: ${{parent.jobs.train_job.outputs.test_data}}
     outputs:
       predictions: 
         mode: rw_mount
@@ -74,8 +74,8 @@ jobs:
   score_job:
     type: command
     inputs:
-      predictions: ${{parent.jobs.predict-job.outputs.predictions}}
-      model: ${{parent.jobs.train-job.outputs.model_output}}
+      predictions: ${{parent.jobs.predict_job.outputs.predictions}}
+      model: ${{parent.jobs.train_job.outputs.model_output}}
     outputs:
       score_report: 
         mode: rw_mount
