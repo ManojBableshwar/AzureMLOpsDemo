@@ -10,9 +10,14 @@ endpoint_name=$(echo $model_id | sed 's/nyctaxi-model/ep/')
 endpoint_name=$(echo $endpoint_name | sed 's/_/-/')
 deployment_name=$(echo $model_id | sed 's/model/deployment/')
 
-az ml online-endpoint create --name $endpoint_name --file src/online-endpoint/endpoint.yml
+az ml online-endpoint create --name $endpoint_name --file src/online-endpoint/endpoint.yml || {
+    echo "endpoint create failed..."; exit 1; 
+}
 
-az ml online-deployment create --name $deployment_name --endpoint-name $endpoint_name --set model=azureml:$model_id:$model_version
+az ml online-deployment create --name $deployment_name --endpoint-name $endpoint_name \
+--set model=azureml:$model_id:$model_version --file src/online-endpoint/deploy.yml  || {
+    echo "deployment create failed..."; exit 1; 
+}
 
 az ml online-endpoint show --name $endpoint_name 
 
