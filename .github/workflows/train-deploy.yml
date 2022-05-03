@@ -10,8 +10,7 @@ on:
         default: "eastus"
       WORKSPACE:
         default: "mlw-contoso-819prod"
-    secrets:
-      AZ_CREDS: ${{ secrets.AZ_CREDS }}
+
 
 jobs:
   train-job:
@@ -20,3 +19,5 @@ jobs:
       GROUP: "rg-contoso-819prod"
       LOCATION: "eastus"
       WORKSPACE: "mlw-contoso-819prod"
+    secrets:
+      AZ_CREDS: ${{ secrets.AZ_CREDS }}
