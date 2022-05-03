@@ -74,7 +74,7 @@ jobs:
       CREATEMODELJOB_MODELID: ${{ steps.create-job-step.outputs.MODELID }}      
 
   deploy-model-job:
-    needs: create-model-job
+    needs: register-model-job
     environment: 
       name: prod
       url: ${{ steps.deploy-model-step.outputs.EPURI }}
@@ -91,5 +91,5 @@ jobs:
       working-directory: cli
     - name: create-model-step
       id: deploy-model-step
-      run: bash -x cli/deploy-model.sh ${{ needs.create-model-job.outputs.CREATEMODELJOB_MODELID }} 1
+      run: bash -x cli/deploy-model.sh ${{ needs.register-model-job.outputs.CREATEMODELJOB_MODELID }} 1
 
