@@ -1,3 +1,4 @@
+# unable to use reusable workflows due to a bug... see inline for bug details...
 name: train-deploy
 
 on: 
@@ -28,6 +29,7 @@ jobs:
       GROUP: "rg-contoso-819prod"
       LOCATION: "eastus"
       WORKSPACE: "mlw-contoso-819prod"
+# unbale to use reusable workflows becuase MLJOB_RUNID from train-job is not being passed to register-model-job
       TRAININGJOB_RUNID: ${{ needs.train-job.outputs.MLJOB_RUNID }}
     secrets:
       AZ_CREDS: ${{ secrets.AZ_CREDS }}

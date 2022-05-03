@@ -6,7 +6,7 @@ az ml job show --name $child_run_id
 
 echo "::set-output name=CHILDRUNID::$child_run_id"
 
-export model_id=$(az ml model create --name nyctaxi-model-$child_run_id --path azureml://jobs/$child_run_id/outputs/artifacts/model/ --query name -o tsv)
+export model_id=$(az ml model create --name nyctaxi-model-$run_id --path azureml://jobs/$child_run_id/outputs/artifacts/model/ --query name -o tsv)
 
 az ml model show --name $model_id
 
