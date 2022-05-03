@@ -1,7 +1,7 @@
 name: train-deploy
 
 on: 
-  push:
+#  push:
   workflow_dispatch:
     inputs:
       GROUP:
@@ -22,13 +22,13 @@ jobs:
     secrets:
       AZ_CREDS: ${{ secrets.AZ_CREDS }}
   register-model-job:
-    needs: create-mljob-job
+    needs: train-job
     uses: ./.github/workflows/create-model.yml
     with: 
       GROUP: "rg-contoso-819prod"
       LOCATION: "eastus"
       WORKSPACE: "mlw-contoso-819prod"
-      TRAININGJOB_RUNID: ${{ needs.create-mljob-job.outputs.MLJOB_RUNID }}
+      TRAININGJOB_RUNID: ${{ needs.train-job.outputs.MLJOB_RUNID }}
     secrets:
       AZ_CREDS: ${{ secrets.AZ_CREDS }}
 

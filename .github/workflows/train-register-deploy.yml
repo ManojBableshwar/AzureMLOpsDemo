@@ -1,6 +1,6 @@
-name: work-in-progress-workflow
+name: train-deploy-register-workflow
 on: 
-#  push:
+  push:
   workflow_dispatch:
     inputs:
       GROUP:
@@ -30,7 +30,7 @@ env:
   WORKSPACE: ${{ github.event.inputs.name.WORKSPACE }}  
 
 jobs:
-  create-mljob-job:
+  train-job:
     environment: 
       name: dev
       url: ${{ steps.create-job-step.outputs.RUNURI }}
@@ -49,6 +49,23 @@ jobs:
       id: create-job-step 
       run: bash -x cli/create-job.sh src/pipeline/pipeline.yml
     outputs:
-      MLJOB_RUNID: ${{ steps.create-job-step.outputs.RUNID }}
-      MLJOB_RUNURI: ${{ steps.create-job-step.outputs.RUNURI }}
+      TRAININGJOB_RUNID: ${{ steps.create-job-step.outputs.RUNID }}
+  register-model-job:
+    environment: 
+      name: test
+      url: ${{ steps.create-model-step.outputs.MODELURI }}
+    runs-on: ubuntu-latest
+    steps:
+    - name: check out repo
+      uses: actions/checkout@v2
+    - name: azure login
+      uses: azure/login@v1
+      with:
+        creds: ${{secrets.AZ_CREDS}}
+    - name: setup
+      run: bash setup.sh 
+      working-directory: cli
+    - name: create-model-step
+      id: create-model-step
+      run: bash -x cli/create-model.sh ${{ needs.train-job.outputs.TRAININGJOB_RUNID }}  
 
