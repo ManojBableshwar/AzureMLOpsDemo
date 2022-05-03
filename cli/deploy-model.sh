@@ -6,7 +6,8 @@ model_version=$2
 
 echo "Model id: $model_id and model version: $model_version"
 
-endpoint_name=$(echo $model_id | sed 's/model/ep/')
+endpoint_name=$(echo $model_id | sed 's/nyctaxi-model/ep/')
+endpoint_name=$(echo $endpoint_name | sed 's/_/-/')
 deployment_name=$(echo $model_id | sed 's/model/deployment/')
 
 az ml online-endpoint create --name $endpoint_name --file src/online-endpoint/endpoint.yml
