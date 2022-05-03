@@ -89,7 +89,7 @@ jobs:
     - name: set-azureml-ws-context-step
       run: bash setup.sh 
       working-directory: cli
-    - name: create-model-step
+    - name: deploy-model-step
       id: deploy-model-step
       run: bash -x cli/deploy-model.sh ${{ needs.register-model-job.outputs.CREATEMODELJOB_MODELID }} 1
 
