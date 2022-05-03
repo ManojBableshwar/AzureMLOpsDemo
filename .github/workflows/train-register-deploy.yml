@@ -36,13 +36,13 @@ jobs:
       url: ${{ steps.create-job-step.outputs.RUNURI }}
     runs-on: ubuntu-latest
     steps:
-    - name: check out repo
+    - name: check-out-repo-step
       uses: actions/checkout@v2
-    - name: azure login
+    - name: azure-login-step
       uses: azure/login@v1
       with:
         creds: ${{secrets.AZ_CREDS}}
-    - name: setup
+    - name: set-azureml-ws-context-step
       run: bash setup.sh 
       working-directory: cli
     - name: create-job-step
@@ -50,6 +50,7 @@ jobs:
       run: bash -x cli/create-job.sh src/pipeline/pipeline.yml
     outputs:
       TRAININGJOB_RUNID: ${{ steps.create-job-step.outputs.RUNID }}
+
   register-model-job:
     needs: train-job
     environment: 
@@ -57,16 +58,38 @@ jobs:
       url: ${{ steps.create-model-step.outputs.MODELURI }}
     runs-on: ubuntu-latest
     steps:
-    - name: check out repo
+    - name: check-out-repo-step
       uses: actions/checkout@v2
-    - name: azure login
+    - name: azure-login-step
       uses: azure/login@v1
       with:
         creds: ${{secrets.AZ_CREDS}}
-    - name: setup
+    - name: set-azureml-ws-context-step
       run: bash setup.sh 
       working-directory: cli
     - name: create-model-step
       id: create-model-step
-      run: bash -x cli/create-model.sh ${{ needs.train-job.outputs.TRAININGJOB_RUNID }}  
+      run: bash -x cli/create-model.sh ${{ needs.train-job.outputs.TRAININGJOB_RUNID }} 
+    outputs:
+      CREATEMODELJOB_MODELID: ${{ steps.create-job-step.outputs.MODELID }}      
+
+  deploy-model-job:
+    needs: create-model-job
+    environment: 
+      name: prod
+      url: ${{ steps.deploy-model-step.outputs.EPURI }}
+    runs-on: ubuntu-latest
+    steps:
+    - name: check-out-repo-step
+      uses: actions/checkout@v2
+    - name: azure-login-step
+      uses: azure/login@v1
+      with:
+        creds: ${{secrets.AZ_CREDS}}
+    - name: set-azureml-ws-context-step
+      run: bash setup.sh 
+      working-directory: cli
+    - name: create-model-step
+      id: deploy-model-step
+      run: bash -x cli/deploy-model.sh ${{ needs.create-model-job.outputs.CREATEMODELJOB_MODELID }} 1
 

@@ -2,7 +2,7 @@ job=$1
 
 export run_id=$(az ml job create --file $job --query name -o tsv)
 #export run_uri=$(az ml job show --name $run_id --query services.Studio.endpoint)
-export run_uri="https://ml.azure.com/runs/$run_id"
+export run_uri="https://ml.azure.com/runs/$run_id?flight=ModelRegisterV2,ModelRegisterExistingEnvironment,dpv2data"
 az ml job show --name $run_id
 
 if [[ -z "$run_id" ]]
@@ -36,7 +36,7 @@ if [[ $status == "Completed" ]]
 then
     echo "Job completed"
     echo "::set-output name=RUNID::$run_id"
-    echo "::set-output name=RUNURI::https://ml.azure.com/runs/$run_id"
+    echo "::set-output name=RUNURI::https://ml.azure.com/runs/$run_id?flight=ModelRegisterV2,ModelRegisterExistingEnvironment,dpv2data"
     exit 0
 elif [[ $status == "Failed" ]]
 then
