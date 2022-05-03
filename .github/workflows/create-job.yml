@@ -1,4 +1,4 @@
-name: create-job
+name: create-job-workflow
 on: 
   push:
   workflow_dispatch:
@@ -27,7 +27,10 @@ env:
   WORKSPACE: ${{ github.event.inputs.name.WORKSPACE }}  
 
 jobs:
-  list-compute:
+  create-mljob-job:
+    environment: 
+      name: dev
+      url: ${{ steps.create-job-step.outputs.RUNURI }}
     runs-on: ubuntu-latest
     steps:
     - name: check out repo
@@ -39,5 +42,5 @@ jobs:
     - name: setup
       run: bash setup.sh 
       working-directory: cli
-    - name: create-job
+    - name: create-job-step
       run: bash -x cli/create-job.sh src/pipeline/pipeline.yml

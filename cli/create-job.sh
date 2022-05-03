@@ -1,6 +1,7 @@
 job=$1
 
 export run_id=$(az ml job create -f $job --query name -o tsv)
+export run_uri=$(az ml job show -n $run_id --query services.Studio.endpoint)
 az ml job show -n $run_id
 
 if [[ -z "$run_id" ]]
@@ -34,6 +35,7 @@ if [[ $status == "Completed" ]]
 then
     echo "Job completed"
     echo "::set-output name=RUNID::$run_id"
+    echo "::set-output name=RUNURI::$run_uri"
     exit 0
 elif [[ $status == "Failed" ]]
 then
