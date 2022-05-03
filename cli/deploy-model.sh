@@ -2,6 +2,10 @@
 model_id=$1
 model_version=$2
 
+[[ -z "$model_id" ]] && { echo "model_id is empty" ; exit 1; }
+
+echo "Model id: $model_id and model version: $model_version"
+
 endpoint_name=$(echo $model_id | sed 's/model/ep/')
 deployment_name=$(echo $model_id | sed 's/model/deployment/')
 

@@ -71,7 +71,7 @@ jobs:
       id: create-model-step
       run: bash -x cli/create-model.sh ${{ needs.train-job.outputs.TRAININGJOB_RUNID }} 
     outputs:
-      CREATEMODELJOB_MODELID: ${{ steps.create-job-step.outputs.MODELID }}      
+      CREATEMODELJOB_MODELID: ${{ steps.create-model-step.outputs.MODELID }}      
 
   deploy-model-job:
     needs: register-model-job
