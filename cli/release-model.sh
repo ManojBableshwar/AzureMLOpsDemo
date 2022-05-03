@@ -6,7 +6,7 @@ deployment_name=$2
 
 echo "endpoint_name: $endpoint_name and deployment_name: $deployment_name"
 
-az ml online-deployment update --name $deployment_name --endpoint-name $endpoint_name --all-traffic {
+az ml online-deployment update --traffic "$deployment_name=100" --name $endpoint_name || {
     echo "deployment traffic update failed..."; exit 1; 
 }
 
