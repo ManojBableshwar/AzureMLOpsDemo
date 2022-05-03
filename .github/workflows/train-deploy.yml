@@ -11,7 +11,7 @@ on:
       WORKSPACE:
         default: "mlw-contoso-819prod"
     secrets:
-      AZ_CREDS: ${{secrets.AZ_CREDS}}
+      AZ_CREDS: ${{ secrets.AZ_CREDS }}
 
 jobs:
   train-job:
