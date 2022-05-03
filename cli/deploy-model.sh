@@ -6,13 +6,14 @@ model_version=$2
 
 echo "Model id: $model_id and model version: $model_version"
 
-# endpoint name can be max 32 char long...
+# endpoint and deployment name can be max 32 char long...
 endpoint_name=$(echo $model_id | sed 's/nyctaxi-model/ep/')
+deployment_name=$(echo $model_id | sed 's/nyctaxi-model/dply/')
 
-# endpoint name cannot contain '_'; one alpha numeric and '-'
+# endpoint and deployment name cannot contain '_'; one alpha numeric and '-'
 endpoint_name=$(echo $endpoint_name | sed 's/_/-/g')
+deployment_name=$(echo $deployment_name | sed 's/_/-/g')
 
-deployment_name=$(echo $model_id | sed 's/model/deployment/')
 
 az ml online-endpoint create --name $endpoint_name --file src/online-endpoint/endpoint.yml || {
     echo "endpoint create failed..."; exit 1; 
