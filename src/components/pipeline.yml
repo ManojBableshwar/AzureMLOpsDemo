@@ -1,6 +1,9 @@
 $schema: https://azuremlschemas.azureedge.net/latest/pipelineJob.schema.json
 type: pipeline
 
+
+
+
 # <inputs_and_outputs>
 inputs:
   pipeline_job_input: #using local data, will crate an anonymous data asset
@@ -47,7 +50,7 @@ jobs:
 
   train_job:
     type: command
-    component: file:./train.yml
+    component: azureml:train_linear_regression_model:99
     inputs:
       training_data: ${{parent.jobs.transform_job.outputs.transformed_data}}
     outputs:
