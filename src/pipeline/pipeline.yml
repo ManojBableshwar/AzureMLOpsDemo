@@ -43,6 +43,7 @@ jobs:
       training_data: ${{parent.jobs.transform_job.outputs.transformed_data}}
     outputs:
       model_output: 
+        type: custom_model
         mode: rw_mount
       test_data: 
         mode: rw_mount
