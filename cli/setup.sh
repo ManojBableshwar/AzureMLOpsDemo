@@ -2,7 +2,7 @@ az extension remove -n azure-cli-ml
 az extension remove -n ml
 az extension add -n ml -y
 
-# Use defaults if not passed by workflow inputs
+# Use defaults if not passed by workflow inputs 
 
 GROUP1=${GROUP:-"rg-contoso-819prod"}
 
