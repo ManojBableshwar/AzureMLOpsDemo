@@ -1,6 +1,13 @@
+
+az version
+
 az extension remove -n azure-cli-ml
 az extension remove -n ml
-az extension add -n ml -y
+
+az extension add -n ml -y  || {
+    echo "az extension add -n ml -y failed..."; exit 1;
+}
+
 
 # Use defaults if not passed by workflow inputs
 
