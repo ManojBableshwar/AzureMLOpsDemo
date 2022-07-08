@@ -1,6 +1,6 @@
 run_id=$1
 
-model_id="nyctaxi-model-$run_id"
+model_id="abe-nyctaxi-model-$run_id"
 model_version=1
 
 [[ -z "$run_id" ]] && { echo "run_id is empty" ; exit 1; }
@@ -14,6 +14,8 @@ echo "::set-output name=CHILDRUNID::$child_run_id"
 az ml model create --name $model_id --version $model_version --path azureml://jobs/$child_run_id/outputs/artifacts/model/ || {
     echo "model create failed..."; exit 1;
 }
+
+az ml model update --name $model_id --version $model_version --set tags.name=123
 
 az ml model show --name $model_id
 
