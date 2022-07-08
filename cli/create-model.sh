@@ -15,7 +15,7 @@ az ml model create --name $model_id --version $model_version --path azureml://jo
     echo "model create failed..."; exit 1;
 }
 
-az ml model update --name $model_id --version $model_version --set tags.name=123
+az ml model update --name $model_id --version $model_version --set tags.name=prod
 
 az ml model show --name $model_id
 
