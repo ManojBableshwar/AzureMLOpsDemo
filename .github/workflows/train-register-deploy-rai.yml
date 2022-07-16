@@ -1,6 +1,3 @@
-
-
-
 name: train-deploy-register-workflow-rai
 on: 
   push:
