@@ -60,12 +60,12 @@ jobs:
     outputs:
       TRAININGJOB_RUNID: ${{ steps.create-job-step.outputs.RUNID }}
 
-  register-model-job:
-    if: ${{ false }}  # disable for now
+  get-model-job:
+    #if: ${{ false }}  # disable for now
     needs: train-job
     environment: 
       name: test
-      url: ${{ steps.create-model-step.outputs.MODELURI }}
+      url: ${{ steps.get-model-step.outputs.MODELURI }}
     runs-on: ubuntu-18.04
     steps:
     - name: check-out-repo-step
@@ -76,16 +76,17 @@ jobs:
         creds: ${{secrets.AZ_CREDS1}}
     - name: set-azureml-ws-context-step
       run: bash setup.sh 
-      working-directory: cli
-    - name: create-model-step
-      id: create-model-step
-      run: bash -x cli/create-model.sh ${{ needs.train-job.outputs.TRAININGJOB_RUNID }} 
+      working-directory: mlops/cli
+    - name: get-model-step
+      id: get-model-step
+      run: bash -x get-rai-model.sh ${{ needs.train-job.outputs.TRAININGJOB_RUNID }} 
+      working-directory: mlops/cli
     outputs:
-      CREATEMODELJOB_MODELID: ${{ steps.create-model-step.outputs.MODELID }}      
+      GETMODELJOB_MODELID: ${{ steps.get-model-step.outputs.MODELID }}      
 
   deploy-model-job:
     if: ${{ false }}  # disable for now
-    needs: register-model-job
+    needs: get-model-job
     environment: 
       name: pre-prod
       url: ${{ steps.deploy-model-step.outputs.EPURI }}
@@ -99,10 +100,11 @@ jobs:
         creds: ${{secrets.AZ_CREDS1}}
     - name: set-azureml-ws-context-step
       run: bash setup.sh 
-      working-directory: cli
+      working-directory: mlops/cli
     - name: deploy-model-step
       id: deploy-model-step
-      run: bash -x cli/deploy-model.sh ${{ needs.register-model-job.outputs.CREATEMODELJOB_MODELID }} 1
+      run: bash -x deploy-model.sh ${{ needs.get-model-job.outputs.GETMODELJOB_MODELID }} 1
+      working-directory: mlops/cli
     outputs:
       DEPLOYJOB_ENDPOINTID: ${{ steps.deploy-model-step.outputs.ENDPOINTID }}
       DEPLOYJOB_DEPLOYMENTID: ${{ steps.deploy-model-step.outputs.DEPLOYMENTID }}
@@ -113,7 +115,7 @@ jobs:
     if: ${{ false }}  # disable for now
     environment: 
       name: prod
-      url: ${{ needs.register-model-job.outputs.DEPLOYJOB_EPURI }}
+      url: ${{ needs.get-model-job.outputs.DEPLOYJOB_EPURI }}
     runs-on: ubuntu-18.04
     steps:
     - name: check-out-repo-step
@@ -124,8 +126,9 @@ jobs:
         creds: ${{secrets.AZ_CREDS1}}
     - name: set-azureml-ws-context-step
       run: bash setup.sh 
-      working-directory: cli
+      working-directory: mlops/cli
     - name: release-model-step
       id: release-model-step
-      run: bash -x cli/release-model.sh ${{ needs.deploy-model-job.outputs.DEPLOYJOB_ENDPOINTID }} ${{ needs.deploy-model-job.outputs.DEPLOYJOB_DEPLOYMENTID }} 
+      run: bash -x cli/release-model.sh ${{ needs.deploy-model-job.outputs.DEPLOYJOB_ENDPOINTID }} ${{ needs.deploy-model-job.outputs.DEPLOYJOB_DEPLOYMENTID }}
+      working-directory: mlops/cli 
 
