@@ -5,9 +5,9 @@ name: placeholder-deployment
 endpoint_name: placeholder-ep
 # this this a placeholder model name that the CLI will override...
 model: azureml:placeholder-model:1
-environment: azureml:AzureML-sklearn-0.24.1-ubuntu18.04-py37-cpu-inference:36
-code_configuration:
-  code: ./
-  scoring_script: score.py
+#environment: azureml:AzureML-sklearn-0.24.1-ubuntu18.04-py37-cpu-inference:36
+#code_configuration:
+#  code: ./
+#  scoring_script: score.py
 instance_type: Standard_F4s_v2
 instance_count: 1

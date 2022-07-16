@@ -11,7 +11,7 @@ az ml job show --name $child_run_id
 
 echo "::set-output name=CHILDRUNID::$child_run_id"
 
-az ml model create --name $model_id --version $model_version --path azureml://jobs/$child_run_id/outputs/artifacts/model/ || {
+az ml model create --name $model_id --version $model_version --type mlflow_model --path azureml://jobs/$child_run_id/outputs/artifacts/model/ || {
     echo "model create failed..."; exit 1;
 }
 
