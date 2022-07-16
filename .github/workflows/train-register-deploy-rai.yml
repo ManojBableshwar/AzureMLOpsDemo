@@ -1,7 +1,7 @@
 
 
 
-name: train-deploy-register-workflow
+name: train-deploy-register-workflow-rai
 on: 
   push:
   workflow_dispatch:
@@ -41,6 +41,8 @@ jobs:
     steps:
     - name: check-out-repo-step
       uses: actions/checkout@v2
+      with:
+        path: mlops
     - name: check-out-rai-setp
       uses: actions/checkout@v3
       with:
@@ -53,10 +55,11 @@ jobs:
         creds: ${{ secrets.AZ_CREDS1 }}
     - name: set-azureml-ws-context-step
       run: bash setup.sh 
-      working-directory: cli
+      #working-directory: mlops
     - name: create-job-step
       id: create-job-step 
-      run: bash -x cli/create-job.sh ../rai/classical/aml-cli-v2/mlops/azureml/train/pipeline.yml
+      run: pwd; ls -l
+      #run: bash -x cli/create-job.sh ../rai/classical/aml-cli-v2/mlops/azureml/train/pipeline.yml
     outputs:
       TRAININGJOB_RUNID: ${{ steps.create-job-step.outputs.RUNID }}
 
