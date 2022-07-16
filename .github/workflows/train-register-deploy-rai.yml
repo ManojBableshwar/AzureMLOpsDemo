@@ -53,13 +53,13 @@ jobs:
       uses: azure/login@v1
       with:
         creds: ${{ secrets.AZ_CREDS1 }}
-    #- name: set-azureml-ws-context-step
-      #run: bash setup.sh 
-      #working-directory: mlops
+    - name: set-azureml-ws-context-step
+      run: bash setup.sh 
+      working-directory: mlops/cli
     - name: create-job-step
       id: create-job-step 
-      run: pwd; ls -l
-      #run: bash -x cli/create-job.sh ../rai/classical/aml-cli-v2/mlops/azureml/train/pipeline.yml
+      run: bash -x create-job.sh ../../rai/classical/aml-cli-v2/mlops/azureml/train/pipeline.yml
+      working-directory: mlops/cli
     outputs:
       TRAININGJOB_RUNID: ${{ steps.create-job-step.outputs.RUNID }}
 
