@@ -53,8 +53,8 @@ jobs:
       uses: azure/login@v1
       with:
         creds: ${{ secrets.AZ_CREDS1 }}
-    - name: set-azureml-ws-context-step
-      run: bash setup.sh 
+    - #name: set-azureml-ws-context-step
+      #run: bash setup.sh 
       #working-directory: mlops
     - name: create-job-step
       id: create-job-step 
