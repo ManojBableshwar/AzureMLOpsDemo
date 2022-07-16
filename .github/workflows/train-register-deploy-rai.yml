@@ -85,7 +85,7 @@ jobs:
       GETMODELJOB_MODELID: ${{ steps.get-model-step.outputs.MODELID }}      
 
   deploy-model-job:
-    if: ${{ false }}  # disable for now
+    #if: ${{ false }}  # disable for now
     needs: get-model-job
     environment: 
       name: pre-prod
@@ -112,7 +112,7 @@ jobs:
 
   release-model-job:
     needs: deploy-model-job
-    if: ${{ false }}  # disable for now
+    #if: ${{ false }}  # disable for now
     environment: 
       name: prod
       url: ${{ needs.get-model-job.outputs.DEPLOYJOB_EPURI }}
