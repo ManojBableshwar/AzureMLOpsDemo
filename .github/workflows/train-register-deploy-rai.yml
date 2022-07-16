@@ -76,11 +76,11 @@ jobs:
         creds: ${{secrets.AZ_CREDS1}}
     - name: set-azureml-ws-context-step
       run: bash setup.sh 
-      working-directory: mlops/cli
+      working-directory: cli
     - name: get-model-step
       id: get-model-step
       run: bash -x get-rai-model.sh ${{ needs.train-job.outputs.TRAININGJOB_RUNID }} 
-      working-directory: mlops/cli
+      working-directory: cli
     outputs:
       GETMODELJOB_MODELID: ${{ steps.get-model-step.outputs.MODELID }}      
 
@@ -100,11 +100,11 @@ jobs:
         creds: ${{secrets.AZ_CREDS1}}
     - name: set-azureml-ws-context-step
       run: bash setup.sh 
-      working-directory: mlops/cli
+      working-directory: cli
     - name: deploy-model-step
       id: deploy-model-step
       run: bash -x deploy-model.sh ${{ needs.get-model-job.outputs.GETMODELJOB_MODELID }} 1
-      working-directory: mlops/cli
+      working-directory: cli
     outputs:
       DEPLOYJOB_ENDPOINTID: ${{ steps.deploy-model-step.outputs.ENDPOINTID }}
       DEPLOYJOB_DEPLOYMENTID: ${{ steps.deploy-model-step.outputs.DEPLOYMENTID }}
@@ -126,9 +126,9 @@ jobs:
         creds: ${{secrets.AZ_CREDS1}}
     - name: set-azureml-ws-context-step
       run: bash setup.sh 
-      working-directory: mlops/cli
+      working-directory: cli
     - name: release-model-step
       id: release-model-step
-      run: bash -x cli/release-model.sh ${{ needs.deploy-model-job.outputs.DEPLOYJOB_ENDPOINTID }} ${{ needs.deploy-model-job.outputs.DEPLOYJOB_DEPLOYMENTID }}
-      working-directory: mlops/cli 
+      run: bash -x release-model.sh ${{ needs.deploy-model-job.outputs.DEPLOYJOB_ENDPOINTID }} ${{ needs.deploy-model-job.outputs.DEPLOYJOB_DEPLOYMENTID }}
+      working-directory: cli 
 
