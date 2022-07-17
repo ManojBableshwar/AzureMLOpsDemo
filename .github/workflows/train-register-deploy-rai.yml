@@ -103,8 +103,8 @@ jobs:
       working-directory: cli
     - name: deploy-model-step
       id: deploy-model-step
-      run: bash -x deploy-model.sh ${{ needs.get-model-job.outputs.GETMODELJOB_MODELID }} 1
-      working-directory: cli
+      run: bash -x cli/deploy-model.sh ${{ needs.get-model-job.outputs.GETMODELJOB_MODELID }} 1
+      #working-directory: cli
     outputs:
       DEPLOYJOB_ENDPOINTID: ${{ steps.deploy-model-step.outputs.ENDPOINTID }}
       DEPLOYJOB_DEPLOYMENTID: ${{ steps.deploy-model-step.outputs.DEPLOYMENTID }}
