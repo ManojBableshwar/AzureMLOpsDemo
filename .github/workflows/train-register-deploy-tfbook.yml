@@ -10,7 +10,7 @@ on:
       WORKSPACE:
         default: "mlw-contoso-819prod"
       TRAINING_COMPUTE:
-        default: "azureml:cpu-cluster"
+        default: "azureml:amlarc-compute"
   workflow_call:
     inputs:
       GROUP:
@@ -23,7 +23,7 @@ on:
         default: "mlw-contoso-819prod"
         type: string
       TRAINING_COMPUTE:
-        default: "azureml:cpu-cluster"
+        default: "azureml:amlarc-compute"
         type: string
     secrets:
       AZ_CREDS1:
