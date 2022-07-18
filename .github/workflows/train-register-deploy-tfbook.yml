@@ -61,7 +61,7 @@ jobs:
       working-directory: mlops/cli
     - name: create-job-step
       id: create-job-step 
-      run: bash -x create-job.sh ../../tfbook/chapter8/pipeline-using-component.yml ${{ env.TRAINING_COMPUTE }}
+      run: bash -x create-job.sh ../../tfbook/chapter8/pipeline.yml ${{ env.TRAINING_COMPUTE }}
       working-directory: mlops/cli
     outputs:
       TRAININGJOB_RUNID: ${{ steps.create-job-step.outputs.RUNID }}
