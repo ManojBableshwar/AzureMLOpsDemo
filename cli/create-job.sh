@@ -1,6 +1,12 @@
 job=$1
+compute=$2
 
-export run_id=$(az ml job create --file $job --query name -o tsv)
+if [[ ! -z "$compute" ]]
+then
+   compute_param="--set settings.default_compute=$compute"
+fi
+
+export run_id=$(az ml job create --file $job $compute_param --query name -o tsv )
 #export run_uri=$(az ml job show --name $run_id --query services.Studio.endpoint)
 export run_uri="https://ml.azure.com/runs/$run_id?flight=ModelRegisterV2,ModelRegisterExistingEnvironment,dpv2data"
 az ml job show --name $run_id
