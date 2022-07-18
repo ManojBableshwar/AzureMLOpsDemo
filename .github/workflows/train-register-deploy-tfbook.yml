@@ -81,7 +81,7 @@ jobs:
         creds: ${{secrets.AZ_CREDS1}}
     - name: set-azureml-ws-context-step
       run: bash setup.sh 
-      working-directory: mlops/cli
+      working-directory: cli
     - name: create-model-step
       id: create-model-step
       run: bash -x cli/create-model.sh ${{ needs.train-job.outputs.TRAININGJOB_RUNID }} 1 tf-text-prediction
