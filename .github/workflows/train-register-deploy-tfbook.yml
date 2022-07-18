@@ -1,0 +1,134 @@
+name: tfbook-deploy-register-workflow
+on: 
+  push:
+  workflow_dispatch:
+    inputs:
+      GROUP:
+        default: "rg-contoso-819prod"
+      LOCATION:
+        default: "eastus"
+      WORKSPACE:
+        default: "mlw-contoso-819prod"
+      TRAINING_COMPUTE:
+        default: "azureml:cpu-cluster"
+  workflow_call:
+    inputs:
+      GROUP:
+        default: "rg-contoso-819prod"
+        type: string
+      LOCATION:
+        default: "eastus"
+        type: string
+      WORKSPACE:
+        default: "mlw-contoso-819prod"
+        type: string
+      TRAINING_COMPUTE:
+        default: "azureml:cpu-cluster"
+        type: string
+    secrets:
+      AZ_CREDS1:
+        required: true
+
+env:
+  GROUP: ${{ github.event.inputs.name.GROUP }}
+  LOCATION: ${{ github.event.inputs.name.LOCATION }}
+  WORKSPACE: ${{ github.event.inputs.name.WORKSPACE }}  
+  TRAINING_COMPUTE: ${{ github.event.inputs.name.TRAINING_COMPUTE }}  
+
+jobs:
+  train-job:
+    environment: 
+      name: dev
+      url: ${{ steps.create-job-step.outputs.RUNURI }}
+    runs-on: ubuntu-18.04
+    steps:
+    - name: check-out-repo-step
+      uses: actions/checkout@v2
+      with:
+        path: mlops
+    - name: check-out-tf-setp
+      uses: actions/checkout@v3
+      with:
+        repository: ManojBableshwar/tfbook
+        ref: master
+        path: tfbook
+    - name: azure-login-step
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZ_CREDS1 }}
+    - name: set-azureml-ws-context-step
+      run: bash setup.sh 
+      working-directory: mlops/cli
+    - name: create-job-step
+      id: create-job-step 
+      run: bash -x create-job.sh ../../tfbook/chapter8/pipeline-using-component.yml ${{ env.TRAINING_COMPUTE }}
+      working-directory: mlops/cli
+    outputs:
+      TRAININGJOB_RUNID: ${{ steps.create-job-step.outputs.RUNID }}
+
+  register-model-job:
+    needs: train-job
+    environment: 
+      name: test
+      url: ${{ steps.create-model-step.outputs.MODELURI }}
+    runs-on: ubuntu-18.04
+    steps:
+    - name: check-out-repo-step
+      uses: actions/checkout@v2
+    - name: azure-login-step
+      uses: azure/login@v1
+      with:
+        creds: ${{secrets.AZ_CREDS1}}
+    - name: set-azureml-ws-context-step
+      run: bash setup.sh 
+      working-directory: mlops/cli
+    - name: create-model-step
+      id: create-model-step
+      run: bash -x cli/create-model.sh ${{ needs.train-job.outputs.TRAININGJOB_RUNID }} 1 tf-text-prediction
+    outputs:
+      CREATEMODELJOB_MODELID: ${{ steps.create-model-step.outputs.MODELID }}    
+
+  deploy-model-job:
+    needs: register-model-job
+    environment: 
+      name: pre-prod
+      url: ${{ steps.deploy-model-step.outputs.EPURI }}
+    runs-on: ubuntu-18.04
+    steps:
+    - name: check-out-repo-step
+      uses: actions/checkout@v2
+    - name: azure-login-step
+      uses: azure/login@v1
+      with:
+        creds: ${{secrets.AZ_CREDS1}}
+    - name: set-azureml-ws-context-step
+      run: bash setup.sh 
+      working-directory: cli
+    - name: deploy-model-step
+      id: deploy-model-step
+      run: bash -x cli/deploy-model.sh ${{ needs.register-model-job.outputs.CREATEMODELJOB_MODELID }} 1
+    outputs:
+      DEPLOYJOB_ENDPOINTID: ${{ steps.deploy-model-step.outputs.ENDPOINTID }}
+      DEPLOYJOB_DEPLOYMENTID: ${{ steps.deploy-model-step.outputs.DEPLOYMENTID }}
+      DEPLOYJOB_EPURI: ${{ steps.deploy-model-step.outputs.EPURI }}
+
+  release-model-job:
+    needs: deploy-model-job
+    environment: 
+      name: prod
+      url: ${{ needs.register-model-job.outputs.DEPLOYJOB_EPURI }}
+    runs-on: ubuntu-18.04
+    steps:
+    - name: check-out-repo-step
+      uses: actions/checkout@v2
+    - name: azure-login-step
+      uses: azure/login@v1
+      with:
+        creds: ${{secrets.AZ_CREDS1}}
+    - name: set-azureml-ws-context-step
+      run: bash setup.sh 
+      working-directory: cli
+    - name: release-model-step
+      id: release-model-step
+      run: bash -x cli/release-model.sh ${{ needs.deploy-model-job.outputs.DEPLOYJOB_ENDPOINTID }} ${{ needs.deploy-model-job.outputs.DEPLOYJOB_DEPLOYMENTID }} 
+
