@@ -22,6 +22,7 @@ on:
         default: "ContosoMLjun14"
 
 env:
+  AZURE_ML_CLI_PRIVATE_FEATURES_ENABLED: true
   DEV_GROUP: ${{ inputs.DEV_GROUP }}
   DEV_LOCATION: ${{ inputs.DEV_LOCATION }}
   DEV_WORKSPACE: ${{ inputs.DEV_WORKSPACE }}  
