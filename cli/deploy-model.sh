@@ -59,7 +59,7 @@ cat src/online-endpoint/sample.json
 
 echo "\n\n\n\nSample scoring response:\n\n\n"
 
-az ml online-endpoint invoke --name $deployment_name --request-file src/online-endpoint/sample.json $ws_info
+az ml online-endpoint invoke --name $endpoint_name --request-file src/online-endpoint/sample.json $ws_info
 
 echo "\n\n\n\n"
 
