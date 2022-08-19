@@ -1,15 +1,24 @@
 job=$1
 compute=$2
+rg=$3
+ws=$4
+
+if [[ ! -z "$ws" ]]
+then
+   ws_info="--workspace-name $ws --resource-group $rg"
+fi
 
 if [[ ! -z "$compute" ]]
 then
    compute_param="--set settings.default_compute=$compute"
 fi
 
-export run_id=$(az ml job create --file $job $compute_param --query name -o tsv )
-#export run_uri=$(az ml job show --name $run_id --query services.Studio.endpoint)
+
+
+export run_id=$(az ml job create --file $job $compute_param --query name -o tsv $ws_info)
+#export run_uri=$(az ml job show --name $run_id --query services.Studio.endpoint $ws_info)
 export run_uri="https://ml.azure.com/runs/$run_id?flight=ModelRegisterV2,ModelRegisterExistingEnvironment,dpv2data"
-az ml job show --name $run_id
+az ml job show --name $run_id $ws_info
 
 if [[ -z "$run_id" ]]
 then
@@ -17,7 +26,7 @@ then
     exit 3
 fi
 
-status=$(az ml job show --name $run_id --query status -o tsv)
+status=$(az ml job show --name $run_id --query status -o tsv $ws_info)
 
 if [[ -z "$status" ]]
 then
@@ -25,7 +34,7 @@ then
     exit 4
 fi
 
-job_uri=$(az ml job show --name $run_id --query services.Studio.endpoint)
+job_uri=$(az ml job show --name $run_id --query services.Studio.endpoint $ws_info)
 
 echo $job_uri
 
@@ -34,7 +43,7 @@ while [[ ${running[*]} =~ $status ]]
 do
     echo $job_uri
     sleep 8 
-    status=$(az ml job show --name $run_id --query status -o tsv)
+    status=$(az ml job show --name $run_id --query status -o tsv $ws_info)
     echo $status
 done
 

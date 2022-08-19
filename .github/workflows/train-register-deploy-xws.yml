@@ -1,0 +1,150 @@
+name: xws-train-deploy-register-workflow
+
+on: 
+  push:
+  workflow_dispatch:
+    inputs:
+      DEV_GROUP:
+        default: "OpenDatasetsPMRG"
+      DEV_LOCATION:
+        default: "eastus2"
+      DEV_WORKSPACE:
+        default: "OpenDatasetsPMWorkspace"
+      PROD_GROUP:
+        default: "rg-contoso-819prod"
+      PROD_LOCATION:
+        default: "eastus"
+      PROD_WORKSPACE:
+        default: "mlw-contoso-819prod"
+      TRAINING_COMPUTE:
+        default: "azureml:cpu-cluster"
+      AZUREML_REGISTRY:
+        default: "ContosoMLjun14"
+  workflow_call:
+    inputs:
+      DEV_GROUP:
+        default: "OpenDatasetsPMRG"
+        type: string
+      DEV_LOCATION:
+        default: "eastus2"
+        type: string
+      DEV_WORKSPACE:
+        default: "OpenDatasetsPMWorkspace"
+        type: string
+      PROD_GROUP:
+        default: "rg-contoso-819prod"
+        type: string
+      PROD_LOCATION:
+        default: "eastus"
+      PROD_WORKSPACE:
+        default: "mlw-contoso-819prod"
+        type: string
+      TRAINING_COMPUTE:
+        default: "azureml:cpu-cluster"
+        type: string
+      AZUREML_REGISTRY:
+        default: "ContosoMLjun14"
+        type: string
+    secrets:
+      AZ_CREDS_CONTOSO_MLOPS:
+        required: true
+
+env:
+  DEV_GROUP: ${{ github.event.inputs.name.DEV_GROUP }}
+  DEV_LOCATION: ${{ github.event.inputs.name.DEV_LOCATION }}
+  DEV_WORKSPACE: ${{ github.event.inputs.name.DEV_WORKSPACE }}  
+  PROD_GROUP: ${{ github.event.inputs.name.PROD_GROUP }}
+  PROD_LOCATION: ${{ github.event.inputs.name.PROD_LOCATION }}
+  PROD_WORKSPACE: ${{ github.event.inputs.name.PROD_WORKSPACE }}  
+  AZUREML_REGISTRY:  ${{ github.event.inputs.name.AZUREML_REGISTRY }}  
+
+jobs:
+  train-job:
+    environment: 
+      name: dev
+      url: ${{ steps.create-job-step.outputs.RUNURI }}
+    runs-on: ubuntu-18.04
+    steps:
+    - name: check-out-repo-step
+      uses: actions/checkout@v2
+    - name: azure-login-step
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZ_CREDS_CONTOSO_MLOPS }}
+    - name: set-azureml-ws-context-step
+      run: bash setup.sh 
+      working-directory: cli
+    - name: create-job-step
+      id: create-job-step 
+      run: bash -x cli/create-job.sh src/pipeline/pipeline.yml ${{ env.TRAINING_COMPUTE }} ${{ env.DEV_GROUP }} ${{ env.DEV_WORKSPACE }}
+    outputs:
+      TRAININGJOB_RUNID: ${{ steps.create-job-step.outputs.RUNID }}
+
+  register-model-job:
+    needs: train-job
+    environment: 
+      name: test
+      url: ${{ steps.create-model-step.outputs.MODELURI }}
+    runs-on: ubuntu-18.04
+    steps:
+    - name: check-out-repo-step
+      uses: actions/checkout@v2
+    - name: azure-login-step
+      uses: azure/login@v1
+      with:
+        creds: ${{secrets.AZ_CREDS_CONTOSO_MLOPS}}
+    - name: set-azureml-ws-context-step
+      run: bash setup.sh 
+      working-directory: cli
+    - name: create-model-step
+      id: create-model-step
+      run: bash -x cli/create-model.sh ${{ needs.train-job.outputs.TRAININGJOB_RUNID }} 2 nyc-taxi ${{ env.DEV_GROUP }} ${{ env.DEV_WORKSPACE }} ${{ env.AZUREML_REGISTRY }}
+    outputs:
+      CREATEMODELJOB_MODELID: ${{ steps.create-model-step.outputs.MODELID }}  
+      CREATEMODELJOB_MODEL_REG_ID: ${{ steps.create-model-step.outputs.MODEL_REG_ID }} 
+          
+
+  deploy-model-job:
+    needs: register-model-job
+    environment: 
+      name: pre-prod
+      url: ${{ steps.deploy-model-step.outputs.EPURI }}
+    runs-on: ubuntu-18.04
+    steps:
+    - name: check-out-repo-step
+      uses: actions/checkout@v2
+    - name: azure-login-step
+      uses: azure/login@v1
+      with:
+        creds: ${{secrets.AZ_CREDS_CONTOSO_MLOPS}}
+    - name: set-azureml-ws-context-step
+      run: bash setup.sh 
+      working-directory: cli
+    - name: deploy-model-step
+      id: deploy-model-step
+      run: bash -x cli/deploy-model.sh ${{ needs.register-model-job.outputs.CREATEMODELJOB_MODELID }} 1 ${{ needs.register-model-job.outputs.CREATEMODELJOB_MODEL_REG_ID }} ${{ env.PROD_GROUP }} ${{ env.PROD_WORKSPACE }} 
+    outputs:
+      DEPLOYJOB_ENDPOINTID: ${{ steps.deploy-model-step.outputs.ENDPOINTID }}
+      DEPLOYJOB_DEPLOYMENTID: ${{ steps.deploy-model-step.outputs.DEPLOYMENTID }}
+      DEPLOYJOB_EPURI: ${{ steps.deploy-model-step.outputs.EPURI }}
+
+  release-model-job:
+    needs: deploy-model-job
+    environment: 
+      name: prod
+      url: ${{ needs.register-model-job.outputs.DEPLOYJOB_EPURI }}
+    runs-on: ubuntu-18.04
+    steps:
+    - name: check-out-repo-step
+      uses: actions/checkout@v2
+    - name: azure-login-step
+      uses: azure/login@v1
+      with:
+        creds: ${{secrets.AZ_CREDS_CONTOSO_MLOPS}}
+    - name: set-azureml-ws-context-step
+      run: bash setup.sh 
+      working-directory: cli
+    - name: release-model-step
+      id: release-model-step
+      run: bash -x cli/release-model.sh ${{ needs.deploy-model-job.outputs.DEPLOYJOB_ENDPOINTID }} ${{ needs.deploy-model-job.outputs.DEPLOYJOB_DEPLOYMENTID }} ${{ env.PROD_GROUP }} ${{ env.PROD_WORKSPACE }} 
+
