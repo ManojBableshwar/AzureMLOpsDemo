@@ -36,6 +36,7 @@ on:
         type: string
       PROD_LOCATION:
         default: "eastus"
+        type: string
       PROD_WORKSPACE:
         default: "mlw-contoso-819prod"
         type: string
