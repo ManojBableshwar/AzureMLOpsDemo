@@ -1,6 +1,6 @@
 run_id=$1
 child_job_index=$2
-model_id_prefix=$4
+model_id_prefix=$3
 rg=$4
 ws=$5
 registry=$6

@@ -64,13 +64,13 @@ jobs:
     - name: azure-login-step
       uses: azure/login@v1
       with:
-        creds: ${{secrets.AZ_CREDS_CONTOSO_MLOPS}}
+        creds: ${{ secrets.AZ_CREDS_CONTOSO_MLOPS }}
     - name: set-azureml-ws-context-step
       run: bash setup.sh 
       working-directory: cli
     - name: create-model-step
       id: create-model-step
-      run: bash -x cli/create-model.sh ${{ needs.train-job.outputs.TRAININGJOB_RUNID }} 2 nyc-taxi ${{ inputs.DEV_GROUP }} ${{ inputs.DEV_WORKSPACE }} ${{ inputs.AZUREML_REGISTRY }}
+      run: bash -x cli/create-model.sh ${{ needs.train-job.outputs.TRAININGJOB_RUNID }} 2 taxi ${{ inputs.DEV_GROUP }} ${{ inputs.DEV_WORKSPACE }} ${{ inputs.AZUREML_REGISTRY }}
     outputs:
       CREATEMODELJOB_MODELID: ${{ steps.create-model-step.outputs.MODELID }}  
       CREATEMODELJOB_MODEL_REG_ID: ${{ steps.create-model-step.outputs.MODEL_REG_ID }} 
@@ -88,7 +88,7 @@ jobs:
     - name: azure-login-step
       uses: azure/login@v1
       with:
-        creds: ${{secrets.AZ_CREDS_CONTOSO_MLOPS}}
+        creds: ${{secrets.AZ_CREDS_CONTOSO_MLOPS }}
     - name: set-azureml-ws-context-step
       run: bash setup.sh 
       working-directory: cli
@@ -112,7 +112,7 @@ jobs:
     - name: azure-login-step
       uses: azure/login@v1
       with:
-        creds: ${{secrets.AZ_CREDS_CONTOSO_MLOPS}}
+        creds: ${{ secrets.AZ_CREDS_CONTOSO_MLOPS }}
     - name: set-azureml-ws-context-step
       run: bash setup.sh 
       working-directory: cli
