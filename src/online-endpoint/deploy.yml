@@ -9,5 +9,5 @@ model: azureml:placeholder-model:1
 #code_configuration:
 #  code: ./
 #  scoring_script: score.py
-instance_type: Standard_DS3_v2
+instance_type: Standard_DS4_v2
 instance_count: 1
