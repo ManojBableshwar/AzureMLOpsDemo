@@ -29,12 +29,23 @@ echo "::set-output name=CHILDRUNID::$child_run_id"
 
 if [[ ! -z "$reg_info" ]]
 then
-  az ml job download --name $child_run_id $ws_info || {
-    echo "model download failed..."; exit 1;
-  }
-  model_reg_id=$( az ml model create --name $model_id --version $model_version --type mlflow_model --path ./artifacts/model $reg_info --query id | sed s/\"//g ) || {
-    echo "model create in registry failed..."; exit 1;
-  }
+# the old way to download the model and create in registry is now changing to creating a model from job output and promoting to registry
+#  az ml job download --name $child_run_id $ws_info || {
+#    echo "model download failed..."; exit 1;
+#  }
+#  model_reg_id=$( az ml model create --name $model_id --version $model_version --type mlflow_model --path ./artifacts/model $reg_info --query id | sed s/\"//g ) || {
+#    echo "model create in registry failed..."; exit 1;
+#  }
+   
+   # create model in workspace
+   az ml model create --path azureml://jobs/$child_run_id/outputs/artifacts/model --name $model_id --version $model_version --type mlflow_model $ws_info || {
+    echo "model create in workspace failed..."; exit 1;
+   }
+   # promote model to registry
+   model_in_workspace_path="azureml://subscriptions/$DEV_SUBSCRIPTION/resourceGroups/$DEV_GROUP/workspaces/$DEV_WORKSPACE/models/$model_id/versions/$model_version"
+   model_reg_id=$(az ml model create --path $model_in_workspace_path $reg_info --query id | sed s/\"//g ) || {
+        echo "model create in registry failed..."; exit 1;
+   }
 else
   az ml model create --name $model_id --version $model_version --type mlflow_model --path azureml://jobs/$child_run_id/outputs/artifacts/model/ $ws_info || {
     echo "model create in workspace failed..."; exit 1;

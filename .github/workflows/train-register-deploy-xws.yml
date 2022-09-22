@@ -4,12 +4,16 @@ name: xws-train-deploy-register-workflow
 on: 
   workflow_dispatch:
     inputs:
+      DEV_SUBSCRIPTION:
+        default: "21d8f407-c4c4-452e-87a4-e609bfb86248"
       DEV_GROUP:
         default: "OpenDatasetsPMRG"
       DEV_LOCATION:
         default: "eastus2"
       DEV_WORKSPACE:
         default: "OpenDatasetsPMWorkspace"
+      TEST_SUBSCRIPTION:
+        default: "21d8f407-c4c4-452e-87a4-e609bfb86248"
       PROD_GROUP:
         default: "rg-contoso-819prod"
       PROD_LOCATION:
@@ -19,13 +23,15 @@ on:
       TRAINING_COMPUTE:
         default: "azureml:cpu-cluster"
       AZUREML_REGISTRY:
-        default: "ContosoMLjun14"
+        default: "ContosoMgSep22"
 
 env:
   AZURE_ML_CLI_PRIVATE_FEATURES_ENABLED: true
+  DEV_SUBSCRIPTION: ${{ inputs.DEV_SUBSCRIPTION }}
   DEV_GROUP: ${{ inputs.DEV_GROUP }}
   DEV_LOCATION: ${{ inputs.DEV_LOCATION }}
   DEV_WORKSPACE: ${{ inputs.DEV_WORKSPACE }}  
+  TEST_SUBSCRIPTION: ${{ inputs.TEST_SUBSCRIPTION }}
   PROD_GROUP: ${{ inputs.PROD_GROUP }}
   PROD_LOCATION: ${{ inputs.PROD_LOCATION }}
   PROD_WORKSPACE: ${{ inputs.PROD_WORKSPACE }}  
