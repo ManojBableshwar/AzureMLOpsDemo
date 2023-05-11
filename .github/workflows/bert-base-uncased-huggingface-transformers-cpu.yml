@@ -1,0 +1,53 @@
+name: bert-base-uncased-huggingface-transformers-cpu
+
+on: 
+  push:
+  workflow_dispatch:
+    inputs:
+      GROUP:
+        default: "rg-contoso-819prod"
+      LOCATION:
+        default: "eastus"
+      WORKSPACE:
+        default: "mlw-contoso-819prod"
+      MODEL:
+        default: "bert-base-uncased"
+  workflow_call:
+    inputs:
+      GROUP:
+        default: "rg-contoso-819prod"
+        type: string
+      LOCATION:
+        default: "eastus"
+        type: string
+      WORKSPACE:
+        default: "mlw-contoso-819prod"
+        type: string
+      MODEL:
+        default: "bert-base-uncased"
+        type: string
+    secrets:
+      AZ_CREDS1:
+        required: true
+
+env:
+  GROUP: ${{ github.event.inputs.name.GROUP }}
+  LOCATION: ${{ github.event.inputs.name.LOCATION }}
+  WORKSPACE: ${{ github.event.inputs.name.WORKSPACE }}  
+
+jobs:
+  deploy-model-job:
+    runs-on: ubuntu-18.04
+    steps:
+    - name: check-out-repo-step
+      uses: actions/checkout@v2
+    - name: azure-login-step
+      uses: azure/login@v1
+      with:
+        creds: ${{secrets.AZ_CREDS1}}
+    - name: set-azureml-ws-context-step
+      run: bash setup.sh 
+      working-directory: cli
+    - name: deploy-model-step
+      id: deploy-model-step
+      run: bash -x cli/deploy-hf-model.sh ${{ inputs.MODEL }} 
