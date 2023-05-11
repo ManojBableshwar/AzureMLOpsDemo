@@ -37,7 +37,7 @@ env:
 
 jobs:
   deploy-model-job:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     steps:
     - name: check-out-repo-step
       uses: actions/checkout@v2
