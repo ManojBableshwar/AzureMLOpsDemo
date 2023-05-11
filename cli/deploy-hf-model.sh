@@ -35,4 +35,4 @@ az ml online-deployment get-logs --name $deployment_name --endpoint-name $endpoi
 # todo add sample inference
 # az ml online-endpoint invoke --name $endpoint_name --deployment-name $deployment_name --request-file ...
 
-az ml online-endpoint delete --name $endpoint_name
+az ml online-endpoint delete --name $endpoint_name --yes
