@@ -4,7 +4,7 @@ instance_type="Standard_DS3_v2"
 
 [[ -z "$model_name" ]] && { echo "model_name is empty" ; exit 1; }
 
-model_asset_id="azureml://registries/HuggingFaceHub/models/$model_name/labels/latest"
+model_info="azureml://registries/HuggingFaceHub/models/$model_name/labels/latest"
 
 echo "Model info: $model_info"
 
