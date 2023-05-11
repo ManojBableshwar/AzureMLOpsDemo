@@ -12,28 +12,12 @@ on:
         default: "mlw-contoso-819prod"
       MODEL:
         default: "bert-base-uncased"
-  workflow_call:
-    inputs:
-      GROUP:
-        default: "rg-contoso-819prod"
-        type: string
-      LOCATION:
-        default: "eastus"
-        type: string
-      WORKSPACE:
-        default: "mlw-contoso-819prod"
-        type: string
-      MODEL:
-        default: "bert-base-uncased"
-        type: string
-    secrets:
-      AZ_CREDS1:
-        required: true
 
 env:
   GROUP: ${{ github.event.inputs.name.GROUP }}
   LOCATION: ${{ github.event.inputs.name.LOCATION }}
   WORKSPACE: ${{ github.event.inputs.name.WORKSPACE }}  
+  MODEL: ${{ github.event.inputs.name.MODEL }}
 
 jobs:
   deploy-model-job:
@@ -50,4 +34,4 @@ jobs:
       working-directory: cli
     - name: deploy-model-step
       id: deploy-model-step
-      run: bash -x cli/deploy-hf-model.sh ${{ inputs.MODEL }} 
+      run: bash -x cli/deploy-hf-model.sh "bert-base-uncased"
